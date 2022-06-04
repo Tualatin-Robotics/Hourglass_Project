@@ -2,8 +2,9 @@
 
 Servo servo;
 bool toggle = false;
-int button = 0;
-int pos = 0;
+int currentButton;
+int previousButton;
+int pos;
 
 int servoPin = 11;
 int ledPin = 12;
@@ -15,25 +16,32 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(buttonPin, INPUT);
   servo.attach(servoPin);
+  delay(500);
+  servo.detach() ;
+  currentButton = digitalRead(buttonPin);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   if (toggle == true) {
+    digitalWrite(ledPin, HIGH);
+    servo.attach(servoPin);
     pos = servo.read();
-    if (pos = 180) {
+    if (pos == 180) {
       servo.write(0);
     } else {
       servo.write(180);
     }
-    digitalWrite(ledPin, HIGH);
+    delay(500);
+    servo.detach();
   } else {
     digitalWrite(ledPin, LOW);
   }
 
   for (int i = 0; i < 450; i++) {
-    button = digitalRead(buttonPin);
-    if (button == HIGH) {
+    previousButton = currentButton;
+    currentButton = digitalRead(buttonPin);
+    if (previousButton == HIGH && currentButton == LOW) {
       toggle = !toggle;
       break;
     }
